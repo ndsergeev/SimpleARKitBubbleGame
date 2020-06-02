@@ -74,7 +74,9 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         // Run the view's session
         sceneView.session.run(configuration)
         
+        #if DEBUG
         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
+        #endif
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -84,7 +86,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
 
-    // DEBUG
+    #if DEBUG
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor
             else {
@@ -107,8 +109,9 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         
         node.addChildNode(planeNode)
     }
+    #endif
     
-    // DEBUG
+    #if DEBUG
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         
         guard let planeAnchor = anchor as?  ARPlaneAnchor,
@@ -128,6 +131,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         let z = CGFloat(planeAnchor.center.z)
         planeNode.position = SCNVector3(x, y, z)
     }
+    #endif
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let location = touches.first!.location(in: sceneView)
