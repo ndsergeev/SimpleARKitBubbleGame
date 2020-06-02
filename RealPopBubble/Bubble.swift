@@ -20,6 +20,8 @@ enum BubbleColor {
 class Bubble: SCNNode {
     var gamePoints: Int!
     
+    let TRANSPARENCY: CGFloat = 0.7
+    
     // Init without color, without position
     init(radius: CGFloat) {
         super.init()
@@ -28,7 +30,7 @@ class Bubble: SCNNode {
         
         sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: randBubbleColor())
         
-        sphere.firstMaterial?.transparency = 0.5
+        sphere.firstMaterial?.transparency = TRANSPARENCY
 
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
@@ -43,7 +45,7 @@ class Bubble: SCNNode {
         
         sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: randBubbleColor())
         
-        sphere.firstMaterial?.transparency = 0.5
+        sphere.firstMaterial?.transparency = TRANSPARENCY
 
         self.geometry = sphere
         self.position = position
@@ -58,7 +60,7 @@ class Bubble: SCNNode {
         
         sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: color)
         
-        sphere.firstMaterial?.transparency = 0.5
+        sphere.firstMaterial?.transparency = TRANSPARENCY
 
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
@@ -73,7 +75,7 @@ class Bubble: SCNNode {
         
         sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: color)
         
-        sphere.firstMaterial?.transparency = 0.5
+        sphere.firstMaterial?.transparency = TRANSPARENCY
 
         self.geometry = sphere
         self.position = position
