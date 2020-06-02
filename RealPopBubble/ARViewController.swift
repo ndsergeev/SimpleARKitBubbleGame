@@ -89,13 +89,6 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
             self.bubbleExistsTime = 0
         }
         
-        for existingBubble in bubbleArray {
-            removeDeadBubble(bubble: existingBubble)
-        }
-        
-        // Bubble checker
-        
-        
         self.lastUpdateTime = time
     }
     
@@ -112,13 +105,6 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
             originNode.addChildNode(bubble)
             bubbleArray += [bubble]
             numberToCreate -= 1
-        }
-    }
-    
-    func removeDeadBubble(bubble: Bubble) {
-        if lastUpdateTime - bubble.startTime  > 5.0 {
-            // Remove bubble
-            bubble.removeFromParentNode()
         }
     }
     
