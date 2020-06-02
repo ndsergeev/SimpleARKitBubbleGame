@@ -29,6 +29,9 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     
     var sceneView: ARSCNView! = nil
     var rootNode: SCNNode!
+    var originNode: SCNNode!
+    
+    var didSetOrigin: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +46,10 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         sceneView.antialiasingMode = .multisampling4X
 
         rootNode = sceneView.scene.rootNode
+        
+        // Setting up the origin
+        originNode = SCNNode()
+        rootNode.addChildNode(originNode)
 
         // 4 different constructors as you wish
         let bubble1 = Bubble(radius: 0.01)
@@ -50,10 +57,10 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         let bubble3 = Bubble(radius: 0.01, position: SCNVector3(0.1, 0.1, 0.1))
         let bubble4 = Bubble(radius: 0.01, color: .black, position: SCNVector3(0.05, 0.05, 0.05))
 
-        rootNode.addChildNode(bubble1)
-        rootNode.addChildNode(bubble2)
-        rootNode.addChildNode(bubble3)
-        rootNode.addChildNode(bubble4)
+        originNode.addChildNode(bubble1)
+        originNode.addChildNode(bubble2)
+        originNode.addChildNode(bubble3)
+        originNode.addChildNode(bubble4)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,8 +69,12 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
 
+        configuration.planeDetection = .horizontal
+        
         // Run the view's session
         sceneView.session.run(configuration)
+        
+        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -71,6 +82,51 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         
         // Pause the view's session
         sceneView.session.pause()
+    }
+
+    // DEBUG
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        guard let planeAnchor = anchor as? ARPlaneAnchor
+            else {
+                return
+        }
+        
+        let width = CGFloat(planeAnchor.extent.x)
+        let height = CGFloat(planeAnchor.extent.z)
+        let plane = SCNPlane(width: width, height: height)
+        
+        plane.materials.first?.diffuse.contents = Color.blue
+        
+        let planeNode = SCNNode(geometry: plane)
+        
+        let x = CGFloat(planeAnchor.center.x)
+        let y = CGFloat(planeAnchor.center.y)
+        let z = CGFloat(planeAnchor.center.z)
+        planeNode.position = SCNVector3(x,y,z)
+        planeNode.eulerAngles.x = -.pi / 2
+        
+        node.addChildNode(planeNode)
+    }
+    
+    // DEBUG
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        
+        guard let planeAnchor = anchor as?  ARPlaneAnchor,
+            let planeNode = node.childNodes.first,
+            let plane = planeNode.geometry as? SCNPlane
+            else {
+                return
+        }
+         
+//        let width = CGFloat(planeAnchor.extent.x)
+//        let height = CGFloat(planeAnchor.extent.z)
+        plane.width = 0.5
+        plane.height = 0.5
+         
+        let x = CGFloat(planeAnchor.center.x)
+        let y = CGFloat(planeAnchor.center.y)
+        let z = CGFloat(planeAnchor.center.z)
+        planeNode.position = SCNVector3(x, y, z)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -80,11 +136,24 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         hitTestOptions[SCNHitTestOption.boundingBoxOnly] = true
         let hitResults: [SCNHitTestResult] = sceneView.hitTest(location, options: hitTestOptions)
         
-        // function removes bibble from parent
+        // function removes bubble from the parent
         if let hit = hitResults.first {
-            hit.node.removeFromParentNode()
+
+            if didSetOrigin {
+                hit.node.removeFromParentNode()
+                // REMOVE FROM THE BUBBLE ARRAY
+            } else {
+                let translation = hit.worldCoordinates
+                let x = translation.x
+                let y = translation.y
+                let z = translation.z
+                
+                originNode.position = SCNVector3(x, y, z)
+                
+                // Once we set up the origin, we start bubble spawn
+                didSetOrigin = true
+            }
         }
-        
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
