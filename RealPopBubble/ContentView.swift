@@ -9,8 +9,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var settings: GSettings
+    
     var body: some View {
-        ARView().edgesIgnoringSafeArea(.all)
+        ARView()
+        .environmentObject(settings)
+        .edgesIgnoringSafeArea(.all)
         .overlay(ARKitBittomView())
     }
 }

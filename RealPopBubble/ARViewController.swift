@@ -11,16 +11,6 @@ import UIKit
 import SceneKit
 import ARKit
 
-struct ARView: UIViewControllerRepresentable {
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ARView>) -> ARViewController {
-        return ARViewController()
-    }
-    
-    func updateUIViewController(_ uiViewController: ARViewController, context: UIViewControllerRepresentableContext<ARView>) {
-        
-    }
-}
-
 class ARViewController: UIViewController, ARSCNViewDelegate {
     override func loadView() {
         super.loadView()
