@@ -30,6 +30,12 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     var sceneView: ARSCNView! = nil
     var rootNode: SCNNode!
     var originNode: SCNNode!
+    var lastUpdateTime: TimeInterval = 0
+    var gameLength: Double = 0.0
+    var bubbleArray = [Bubble]()
+    var bubble = Bubble(radius: 0.01)
+    var maxBubbleNumber:Int = 100
+    var bubbleExistsTime: TimeInterval = 0
     
     var didSetOrigin: Bool = false
     
@@ -52,15 +58,54 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         rootNode.addChildNode(originNode)
 
         // 4 different constructors as you wish
-        let bubble1 = Bubble(radius: 0.01)
-        let bubble2 = Bubble(radius: 0.01, color: .pink)
-        let bubble3 = Bubble(radius: 0.01, position: SCNVector3(0.1, 0.1, 0.1))
-        let bubble4 = Bubble(radius: 0.01, color: .black, position: SCNVector3(0.05, 0.05, 0.05))
+//        let bubble1 = Bubble(radius: 0.01)
+//        let bubble2 = Bubble(radius: 0.01, color: .pink)
+//        let bubble3 = Bubble(radius: 0.01, position: SCNVector3(0.1, 0.1, 0.1))
+//        let bubble4 = Bubble(radius: 0.01, color: .black, position: SCNVector3(0.05, 0.05, 0.05))
+        
 
-        originNode.addChildNode(bubble1)
-        originNode.addChildNode(bubble2)
-        originNode.addChildNode(bubble3)
-        originNode.addChildNode(bubble4)
+//        originNode.addChildNode(bubble1)
+//        originNode.addChildNode(bubble2)
+//        originNode.addChildNode(bubble3)
+//        originNode.addChildNode(bubble4)
+        
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
+        //1. Check/set global timer (if timer == 0, stop game)
+        //2. Check bubble death timers - remove all bubbles that have expired
+        if (self.gameLength == 0) {
+            self.gameLength = time + 60
+        }
+        // Game ends logic
+        if time >= gameLength { sceneView.session.pause() }
+        
+        // create bubble
+        let delta = time - self.lastUpdateTime
+        self.bubbleExistsTime += delta
+        
+        if self.bubbleExistsTime > 1 {
+            createBubbles(time: time)
+            self.bubbleExistsTime = 0
+        }
+        
+        self.lastUpdateTime = time
+    }
+    
+    
+    func createBubbles(time: Double) {
+        print("\(bubbleArray.count)")
+        // var numberToCreate = arc4random_uniform(UInt32(maxBubbleNumber - bubbleArray.count)) + 1
+        var numberToCreate = 2
+        while 0 < numberToCreate {
+            bubble = Bubble(radius: 0.01, color: .pink)
+            if bubble.startTime == 0.0 {
+                bubble.startTime = time
+            }
+            originNode.addChildNode(bubble)
+            bubbleArray += [bubble]
+            numberToCreate -= 1
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
