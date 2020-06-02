@@ -19,6 +19,7 @@ enum BubbleColor {
 
 class Bubble: SCNNode {
     var gamePoints: Int!
+    var startTime: Double! = 0.0
     
     // Init without color, without position
     init(radius: CGFloat) {

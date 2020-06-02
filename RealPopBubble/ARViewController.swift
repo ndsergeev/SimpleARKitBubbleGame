@@ -30,6 +30,9 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     var sceneView: ARSCNView! = nil
     var rootNode: SCNNode!
     var originNode: SCNNode!
+    var lastUpdateTime: TimeInterval = 0
+    var gameLength: Double = 0.0
+    var bubble = Bubble(radius: 0.01, color: .pink)
     
     var didSetOrigin: Bool = false
     
@@ -61,6 +64,36 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         originNode.addChildNode(bubble2)
         originNode.addChildNode(bubble3)
         originNode.addChildNode(bubble4)
+        originNode.addChildNode(bubble)
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
+        //1. Check/set global timer (if timer == 0, stop game)
+        //2. Check bubble death timers - remove all bubbles that have expired
+        if (self.gameLength == 0) {
+            self.gameLength = time + 60
+        }
+        
+        // Game ends logic
+        if time >= gameLength { print("GAME OVER") }
+        
+        // create bubble
+        if bubble.startTime == 0.0 {
+            bubble.startTime = time
+        }
+        
+        // Bubble checker
+        removeDeadBubble(bubble: bubble)
+        
+        self.lastUpdateTime = time
+    }
+    
+    func removeDeadBubble(bubble: Bubble) {
+        if lastUpdateTime - bubble.startTime  > 5.0 {
+            // Remove bubble
+            bubble.removeFromParentNode()
+            print("remove bubble")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
