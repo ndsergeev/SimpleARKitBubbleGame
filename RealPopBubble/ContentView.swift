@@ -26,13 +26,13 @@ struct ARKitBittomView: View {
         VStack {
             HStack {
                 VStack {
-                    Text("Highest: \(self.data.highestScore)")
-                    Text("Current: \(self.data.currentScore)")
+                    Text("Highest: \(data.highestScore)")
+                    Text("Current: \(data.currentScore)")
                 }
 
                 Spacer()
                 
-                Text("⏱: \(self.data.timer,  specifier: "%.f")s")
+                Text("⏱: \(data.timer,  specifier: "%.f")s")
                     .font(.largeTitle)
                 .font(.largeTitle)
                 

@@ -16,6 +16,7 @@
 		1678913A247A557A00269148 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16789138247A557A00269148 /* LaunchScreen.storyboard */; };
 		16BA8F4C2486641500B5D002 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA8F4B2486641500B5D002 /* DataModel.swift */; };
 		16BA8F4E24866ADD00B5D002 /* ARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA8F4D24866ADD00B5D002 /* ARView.swift */; };
+		16BAA2742489366C00DF7DDB /* DebugARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BAA2732489366C00DF7DDB /* DebugARViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		1678913B247A557A00269148 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		16BA8F4B2486641500B5D002 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		16BA8F4D24866ADD00B5D002 /* ARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARView.swift; sourceTree = "<group>"; };
+		16BAA2732489366C00DF7DDB /* DebugARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugARViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				165F314B2483E99D00BBEE02 /* ContentView.swift */,
 				16BA8F4D24866ADD00B5D002 /* ARView.swift */,
 				16789131247A557800269148 /* ARViewController.swift */,
+				16BAA2732489366C00DF7DDB /* DebugARViewController.swift */,
 				165F31472483773900BBEE02 /* Bubble.swift */,
 				16789136247A557A00269148 /* Assets.xcassets */,
 				16789138247A557A00269148 /* LaunchScreen.storyboard */,
@@ -151,6 +154,7 @@
 				16BA8F4C2486641500B5D002 /* DataModel.swift in Sources */,
 				165F31482483773900BBEE02 /* Bubble.swift in Sources */,
 				1678912E247A557800269148 /* AppDelegate.swift in Sources */,
+				16BAA2742489366C00DF7DDB /* DebugARViewController.swift in Sources */,
 				16BA8F4E24866ADD00B5D002 /* ARView.swift in Sources */,
 				165F314A2483E79900BBEE02 /* SceneDelegate.swift in Sources */,
 			);

@@ -6,9 +6,6 @@
 //  Copyright © 2020 Nikita Sergeev. All rights reserved.
 //
 
-import SwiftUI
-import UIKit
-import SceneKit
 import ARKit
 
 class ARViewController: UIViewController, ARSCNViewDelegate {
@@ -21,6 +18,8 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     init(data: DataModel) {
         super.init(nibName: nil, bundle: nil)
         self.data = data
+        // you can reinit all fields here
+        self.data!.timer = 60
     }
     
     required init?(coder: NSCoder) {
@@ -30,11 +29,10 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     var sceneView: ARSCNView! = nil
     var rootNode: SCNNode!
     var originNode: SCNNode!
+    
     var lastUpdateTime: TimeInterval = 0
-    var gameLength: Double = 0.0
-    var bubbleArray = [Bubble]()
-    var bubble = Bubble(radius: 0.01)
-    var maxBubbleNumber:Int = 100
+
+    var bubbles = [Bubble]()
     var bubbleExistsTime: TimeInterval = 0
     
     var didSetOrigin: Bool = false
@@ -56,56 +54,73 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         // Setting up the origin
         originNode = SCNNode()
         rootNode.addChildNode(originNode)
-
-        // 4 different constructors as you wish
-//        let bubble1 = Bubble(radius: 0.01)
-//        let bubble2 = Bubble(radius: 0.01, color: .pink)
-//        let bubble3 = Bubble(radius: 0.01, position: SCNVector3(0.1, 0.1, 0.1))
-//        let bubble4 = Bubble(radius: 0.01, color: .black, position: SCNVector3(0.05, 0.05, 0.05))
-        
-
-//        originNode.addChildNode(bubble1)
-//        originNode.addChildNode(bubble2)
-//        originNode.addChildNode(bubble3)
-//        originNode.addChildNode(bubble4)
-        
     }
     
     func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
         //1. Check/set global timer (if timer == 0, stop game)
         //2. Check bubble death timers - remove all bubbles that have expired
-        if (self.gameLength == 0) {
-            self.gameLength = time + 60
+        if lastUpdateTime == 0 {
+            lastUpdateTime = time
         }
-        // Game ends logic
-        if time >= gameLength { sceneView.session.pause() }
         
-        // create bubble
-        let delta = time - self.lastUpdateTime
-        self.bubbleExistsTime += delta
+        let delta = time - lastUpdateTime
         
-        if self.bubbleExistsTime > 1 {
-            createBubbles(time: time)
-            self.bubbleExistsTime = 0
+        if didSetOrigin {
+            updateTimer(delta: delta)
+            
+            // create bubble
+            self.bubbleExistsTime += delta
+            
+            if self.bubbleExistsTime > 2 {
+                spawnBubble(time: time)
+                
+                self.bubbleExistsTime = 0
+            }
+        }
+        
+        // Game is over
+        if data!.timer < 0.0 {
+            // ToDo:
+            // This pause does not actually pauses the animation, etc
+            // wait 60 seconds
+            sceneView.session.pause()
+            updateGameIsOver(val: true)
         }
         
         self.lastUpdateTime = time
     }
     
-    
-    func createBubbles(time: Double) {
-        print("\(bubbleArray.count)")
-        // var numberToCreate = arc4random_uniform(UInt32(maxBubbleNumber - bubbleArray.count)) + 1
-        var numberToCreate = 2
-        while 0 < numberToCreate {
-            bubble = Bubble(radius: 0.01, color: .pink)
-            if bubble.startTime == 0.0 {
-                bubble.startTime = time
-            }
-            originNode.addChildNode(bubble)
-            bubbleArray += [bubble]
-            numberToCreate -= 1
+    func updateGameIsOver(val: Bool) {
+        DispatchQueue.main.async {
+            self.data?.gameIsOver = val
         }
+    }
+    
+    func updateTimer(delta: TimeInterval) {
+        // need to run it asyncronically
+        // so it updates UI without a delay
+        DispatchQueue.main.async {
+            self.data?.timer -= delta
+        }
+    }
+    
+    func spawnBubble(time: Double) {
+        for _ in 0...2 {
+            let bubble = Bubble(radius: 0.025, position: randSpawnPos(origin: originNode.position))
+            bubble.startTime = time
+            
+            originNode.addChildNode(bubble)
+            bubbles.append(bubble)
+        }
+    }
+    
+    // Move this function to bubble and make it work
+    func randSpawnPos(origin: SCNVector3) -> SCNVector3 {
+        let x = CGFloat.random(in: -0.5...0.5)
+        let y: CGFloat = 0.0
+        let z = CGFloat.random(in: -0.5...0.5)
+        
+        return SCNVector3(x,y,z)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -133,53 +148,6 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         // Pause the view's session
         sceneView.session.pause()
     }
-
-    #if DEBUG
-    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        guard let planeAnchor = anchor as? ARPlaneAnchor
-            else {
-                return
-        }
-        
-        let width = CGFloat(planeAnchor.extent.x)
-        let height = CGFloat(planeAnchor.extent.z)
-        let plane = SCNPlane(width: width, height: height)
-        
-        plane.materials.first?.diffuse.contents = Color.blue
-        
-        let planeNode = SCNNode(geometry: plane)
-        
-        let x = CGFloat(planeAnchor.center.x)
-        let y = CGFloat(planeAnchor.center.y)
-        let z = CGFloat(planeAnchor.center.z)
-        planeNode.position = SCNVector3(x,y,z)
-        planeNode.eulerAngles.x = -.pi / 2
-        
-        node.addChildNode(planeNode)
-    }
-    #endif
-    
-    #if DEBUG
-    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        
-        guard let planeAnchor = anchor as?  ARPlaneAnchor,
-            let planeNode = node.childNodes.first,
-            let plane = planeNode.geometry as? SCNPlane
-            else {
-                return
-        }
-         
-//        let width = CGFloat(planeAnchor.extent.x)
-//        let height = CGFloat(planeAnchor.extent.z)
-        plane.width = 0.5
-        plane.height = 0.5
-         
-        let x = CGFloat(planeAnchor.center.x)
-        let y = CGFloat(planeAnchor.center.y)
-        let z = CGFloat(planeAnchor.center.z)
-        planeNode.position = SCNVector3(x, y, z)
-    }
-    #endif
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let location = touches.first!.location(in: sceneView)
@@ -192,7 +160,12 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         if let hit = hitResults.first {
 
             if didSetOrigin {
-                data?.highestScore += 50
+                // Give points
+                data!.currentScore += 10
+                if data!.currentScore > data!.highestScore {
+                    data!.highestScore = data!.currentScore
+                }
+                // Removals
                 hit.node.removeFromParentNode()
                 // REMOVE FROM THE BUBBLE ARRAY
             } else {
