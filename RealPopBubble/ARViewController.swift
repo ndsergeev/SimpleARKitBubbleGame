@@ -74,6 +74,9 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         // Run the view's session
         sceneView.session.run(configuration)
         
+        sceneView.autoenablesDefaultLighting = true
+        sceneView.automaticallyUpdatesLighting = true
+        
         #if DEBUG
         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         #endif

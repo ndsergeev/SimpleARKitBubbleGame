@@ -20,6 +20,8 @@ enum BubbleColor {
 class Bubble: SCNNode {
     var gamePoints: Int!
     
+    let TRANSPARENCY: CGFloat = 0.7
+    
     // Init without color, without position
     init(radius: CGFloat) {
         super.init()
@@ -28,8 +30,11 @@ class Bubble: SCNNode {
         
         sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: randBubbleColor())
         
+        sphere.firstMaterial?.transparency = TRANSPARENCY
+
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
+        self.move()
     }
     
     // Init without color, with position
@@ -40,8 +45,11 @@ class Bubble: SCNNode {
         
         sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: randBubbleColor())
         
+        sphere.firstMaterial?.transparency = TRANSPARENCY
+
         self.geometry = sphere
         self.position = position
+        self.move()
     }
     
     // Init with color, without position
@@ -52,8 +60,11 @@ class Bubble: SCNNode {
         
         sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: color)
         
+        sphere.firstMaterial?.transparency = TRANSPARENCY
+
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
+        self.move()
     }
     
     // Init with color, with position
@@ -64,8 +75,11 @@ class Bubble: SCNNode {
         
         sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: color)
         
+        sphere.firstMaterial?.transparency = TRANSPARENCY
+
         self.geometry = sphere
         self.position = position
+        self.move()
     }
     
     func setBubbleColorAndPoints(color: BubbleColor) -> UIColor{
@@ -112,6 +126,19 @@ class Bubble: SCNNode {
             print("The chance color: \(chance) is out or the range")
             return .red
         }
+    }
+    
+    func move(){
+         let moveUp = SCNAction.moveBy(x: 0, y: 1, z: 0, duration: 24)
+         moveUp.timingMode = .easeInEaseOut;
+        
+         let moveDown = SCNAction.moveBy(x: 0, y: -1, z: 0, duration: 1)
+         moveDown.timingMode = .easeInEaseOut;
+         
+         let moveSequence = SCNAction.sequence([moveUp, moveDown])
+         let moveLoop = SCNAction.repeatForever(moveSequence)
+         
+         self.runAction(moveLoop)
     }
     
     required init?(coder: NSCoder) {
