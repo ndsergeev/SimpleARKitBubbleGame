@@ -17,6 +17,16 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         view = ARSCNView()
     }
     
+    var data: DataModel?
+    init(data: DataModel) {
+        super.init(nibName: nil, bundle: nil)
+        self.data = data
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var sceneView: ARSCNView! = nil
     var rootNode: SCNNode!
     var originNode: SCNNode!
@@ -134,6 +144,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         if let hit = hitResults.first {
 
             if didSetOrigin {
+                data?.highestScore += 50
                 hit.node.removeFromParentNode()
                 // REMOVE FROM THE BUBBLE ARRAY
             } else {

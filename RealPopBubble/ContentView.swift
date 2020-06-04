@@ -9,34 +9,31 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var settings: GSettings
+    @EnvironmentObject var data: DataModel
     
     var body: some View {
         ARView()
-        .environmentObject(settings)
+        .environmentObject(data)
         .edgesIgnoringSafeArea(.all)
         .overlay(ARKitBittomView())
     }
 }
 
 struct ARKitBittomView: View {
-//    @EnvironmentObject var prefs: Prefs
+    @EnvironmentObject var data: DataModel
     
     var body: some View {
         VStack {
             HStack {
                 VStack {
-//                    Text("Highest: \(self.prefs.highestScore)")
-//                    Text("Current: \(self.prefs.lastScore)")
-                    Text("Highest: 0")
-                    Text("Current: 0")
+                    Text("Highest: \(self.data.highestScore)")
+                    Text("Current: \(self.data.currentScore)")
                 }
 
                 Spacer()
                 
-//                Text("⏱: \(self.prefs.timer,  specifier: "%.f")s")
-//                    .font(.largeTitle)
-                Text("⏱: \(0)s")
+                Text("⏱: \(self.data.timer,  specifier: "%.f")s")
+                    .font(.largeTitle)
                 .font(.largeTitle)
                 
                 Spacer()
