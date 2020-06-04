@@ -19,6 +19,9 @@ enum BubbleColor {
 
 class Bubble: SCNNode {
     var gamePoints: Int!
+    var startTime: Double! = 0.0
+    
+    let TRANSPARENCY: CGFloat = 0.7
     
     let TRANSPARENCY: CGFloat = 0.7
     
