@@ -14,14 +14,15 @@ extension ARViewController: ARCoachingOverlayViewDelegate, ARSessionDelegate {
         presentCoachingOverlay()
     }
     
-    func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        presentCoachingOverlay()
-    }
+//    func sessionWasInterrupted(_ session: ARSession) {
+//        // Inform the user that the session has been interrupted, for example, by presenting an overlay
+//        presentCoachingOverlay()
+//    }
     
     func stopCoachingOverlay() {
         // deletes animated signifier from the view
-        DispatchQueue.main.async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            
             self.coachingOverlay.delegate = nil
             self.coachingOverlay.setActive(false, animated: false)
             self.coachingOverlay.removeFromSuperview()

@@ -20,6 +20,7 @@ enum BubbleColor {
 class Bubble: SCNNode {
     var gamePoints: Int!
     var startTime: TimeInterval = 0.0
+    var color: BubbleColor!
     
     let TRANSPARENCY: CGFloat = 0.7
     
@@ -29,7 +30,9 @@ class Bubble: SCNNode {
         
         let sphere = SCNSphere(radius: radius)
         
-        setMaterial(geometry: sphere, color: randBubbleColor())
+        self.color = randBubbleColor()
+        
+        setMaterial(geometry: sphere, color: self.color)
 
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
@@ -42,7 +45,9 @@ class Bubble: SCNNode {
         
         let sphere = SCNSphere(radius: radius)
         
-        setMaterial(geometry: sphere, color: randBubbleColor())
+        self.color = randBubbleColor()
+        
+        setMaterial(geometry: sphere, color: self.color)
 
         self.geometry = sphere
         self.position = position
@@ -54,6 +59,8 @@ class Bubble: SCNNode {
         super.init()
         
         let sphere = SCNSphere(radius: radius)
+        
+        self.color = color
         
         setMaterial(geometry: sphere, color: color)
 
@@ -67,6 +74,8 @@ class Bubble: SCNNode {
         super.init()
         
         let sphere = SCNSphere(radius: radius)
+        
+        self.color = color
         
         setMaterial(geometry: sphere, color: color)
         

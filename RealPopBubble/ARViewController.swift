@@ -20,27 +20,27 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         self.data = data
         
         // you can reinit all fields here
-        self.data!.timer = 60
+        self.data!.timer = 15
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // main components
     var sceneView: ARSCNView! = nil
     var rootNode: SCNNode!
     var originNode: SCNNode!
     
+    // origin based variables
+    var planes = [SCNNode]()
+    var didSetOrigin: Bool = false
+    let coachingOverlay = ARCoachingOverlayView()
+    
     var lastUpdateTime: TimeInterval = 0
 
-    var bubbles = [Bubble]()
     var bubbleExistsTime: TimeInterval = 0
-    
-    var planes = [SCNNode]()
-    
-    var didSetOrigin: Bool = false
-    
-    let coachingOverlay = ARCoachingOverlayView()
+    var previousBubbleColor: BubbleColor?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,6 +92,9 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
             // ToDo:
             // This pause does not actually pauses the animation, etc
             // wait 60 seconds
+
+            removeBubbles()
+            zeroTimer()
             sceneView.session.pause()
             updateGameIsOver(val: true)
         }
@@ -101,7 +104,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     
     func updateGameIsOver(val: Bool) {
         DispatchQueue.main.async {
-            self.data?.gameIsOver = val
+            self.data!.gameIsOver = val
         }
     }
     
@@ -109,17 +112,31 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         // need to run it asyncronically
         // so it updates UI without a delay
         DispatchQueue.main.async {
-            self.data?.timer -= delta
+            self.data!.timer -= delta
+        }
+    }
+    
+    func zeroTimer() {
+        DispatchQueue.main.async {
+            self.data!.timer = 0
+        }
+    }
+    
+    func removeBubbles() {
+        DispatchQueue.main.async {
+            for bubble in self.originNode.childNodes {
+                bubble.removeFromParentNode()
+            }
         }
     }
     
     func spawnBubble(time: Double) {
         for _ in 0...2 {
+            // change the constructor when Michelle implements radius range
             let bubble = Bubble(radius: 0.025, position: randSpawnPos(origin: originNode.position))
             bubble.startTime = time
             
             originNode.addChildNode(bubble)
-            bubbles.append(bubble)
         }
     }
     
@@ -169,14 +186,9 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         if let hit = hitResults.first {
 
             if didSetOrigin {
-                // Give points
-                data!.currentScore += 10
-                if data!.currentScore > data!.highestScore {
-                    data!.highestScore = data!.currentScore
+                if hit.node.isKind(of: Bubble.self) {
+                    touchBubble(hit: hit)
                 }
-                // Removals
-                hit.node.removeFromParentNode()
-                // REMOVE FROM THE BUBBLE ARRAY
             } else {
                 if !coachingOverlay.isActive {
                     let translation = hit.worldCoordinates
@@ -196,6 +208,27 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
                     planes.removeAll()
                 }
             }
+        }
+    }
+    
+    func touchBubble(hit: SCNHitTestResult) {
+        // that is quite unsafe, but we have the only root and origin
+        DispatchQueue.main.async {
+            let bubble = hit.node as! Bubble
+                             
+            // Give points
+            if bubble.color == self.previousBubbleColor {
+                self.data!.currentScore += Int(((Double(bubble.gamePoints) * 1.5)).rounded())
+            } else {
+                self.data!.currentScore += Int(bubble.gamePoints)
+            }
+            self.previousBubbleColor = bubble.color
+
+            if self.data!.currentScore > self.data!.highestScore {
+                self.data!.highestScore = self.data!.currentScore
+            }
+            // Removals
+            hit.node.removeFromParentNode()
         }
     }
     

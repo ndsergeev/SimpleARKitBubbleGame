@@ -32,7 +32,7 @@ struct ARKitBittomView: View {
 
                 Spacer()
                 
-                Text("⏱: \(data.timer,  specifier: "%.f")s")
+                Text("⏱: \(abs(data.timer),  specifier: "%.f")s")
                     .font(.largeTitle)
                 .font(.largeTitle)
                 
