@@ -8,7 +8,6 @@
 
 import ARKit
 
-#if DEBUG
 extension ARViewController {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
@@ -21,7 +20,7 @@ extension ARViewController {
         let height = CGFloat(planeAnchor.extent.z)
         let plane = SCNPlane(width: width, height: height)
         
-        plane.materials.first?.diffuse.contents = CGColor.init(srgbRed: 0, green: 0, blue: 1, alpha: 0.5)
+        plane.materials.first?.diffuse.contents = CGColor(srgbRed: 0, green: 0, blue: 1, alpha: 0.5)
         
         let planeNode = SCNNode(geometry: plane)
         
@@ -32,6 +31,11 @@ extension ARViewController {
         planeNode.eulerAngles.x = -.pi / 2
         
         node.addChildNode(planeNode)
+        planes.append(planeNode)
+        
+        if coachingOverlay.isActive {
+            stopCoachingOverlay()
+        }
     }
 
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
@@ -42,16 +46,17 @@ extension ARViewController {
             else {
                 return
         }
-         
-//        let width = CGFloat(planeAnchor.extent.x)
-//        let height = CGFloat(planeAnchor.extent.z)
-        plane.width = 0.5
-        plane.height = 0.5
+        
+        plane.width = CGFloat(planeAnchor.extent.x)
+        plane.height = CGFloat(planeAnchor.extent.z)
          
         let x = CGFloat(planeAnchor.center.x)
         let y = CGFloat(planeAnchor.center.y)
         let z = CGFloat(planeAnchor.center.z)
         planeNode.position = SCNVector3(x, y, z)
+        
+        if coachingOverlay.isActive {
+            stopCoachingOverlay()
+        }
     }
 }
-#endif

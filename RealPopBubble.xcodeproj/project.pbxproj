@@ -14,9 +14,10 @@
 		16789132247A557800269148 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16789131247A557800269148 /* ARViewController.swift */; };
 		16789137247A557A00269148 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16789136247A557A00269148 /* Assets.xcassets */; };
 		1678913A247A557A00269148 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16789138247A557A00269148 /* LaunchScreen.storyboard */; };
+		167A0B40248BE87500E905B5 /* CoachingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167A0B3F248BE87500E905B5 /* CoachingOverlay.swift */; };
 		16BA8F4C2486641500B5D002 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA8F4B2486641500B5D002 /* DataModel.swift */; };
 		16BA8F4E24866ADD00B5D002 /* ARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA8F4D24866ADD00B5D002 /* ARView.swift */; };
-		16BAA2742489366C00DF7DDB /* DebugARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BAA2732489366C00DF7DDB /* DebugARViewController.swift */; };
+		16BAA2742489366C00DF7DDB /* DetectSerface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BAA2732489366C00DF7DDB /* DetectSerface.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,9 +30,10 @@
 		16789136247A557A00269148 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		16789139247A557A00269148 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1678913B247A557A00269148 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		167A0B3F248BE87500E905B5 /* CoachingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachingOverlay.swift; sourceTree = "<group>"; };
 		16BA8F4B2486641500B5D002 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		16BA8F4D24866ADD00B5D002 /* ARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARView.swift; sourceTree = "<group>"; };
-		16BAA2732489366C00DF7DDB /* DebugARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugARViewController.swift; sourceTree = "<group>"; };
+		16BAA2732489366C00DF7DDB /* DetectSerface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectSerface.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,7 +72,8 @@
 				165F314B2483E99D00BBEE02 /* ContentView.swift */,
 				16BA8F4D24866ADD00B5D002 /* ARView.swift */,
 				16789131247A557800269148 /* ARViewController.swift */,
-				16BAA2732489366C00DF7DDB /* DebugARViewController.swift */,
+				167A0B3F248BE87500E905B5 /* CoachingOverlay.swift */,
+				16BAA2732489366C00DF7DDB /* DetectSerface.swift */,
 				165F31472483773900BBEE02 /* Bubble.swift */,
 				16789136247A557A00269148 /* Assets.xcassets */,
 				16789138247A557A00269148 /* LaunchScreen.storyboard */,
@@ -150,11 +153,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				16789132247A557800269148 /* ARViewController.swift in Sources */,
+				167A0B40248BE87500E905B5 /* CoachingOverlay.swift in Sources */,
 				165F314C2483E99D00BBEE02 /* ContentView.swift in Sources */,
 				16BA8F4C2486641500B5D002 /* DataModel.swift in Sources */,
 				165F31482483773900BBEE02 /* Bubble.swift in Sources */,
 				1678912E247A557800269148 /* AppDelegate.swift in Sources */,
-				16BAA2742489366C00DF7DDB /* DebugARViewController.swift in Sources */,
+				16BAA2742489366C00DF7DDB /* DetectSerface.swift in Sources */,
 				16BA8F4E24866ADD00B5D002 /* ARView.swift in Sources */,
 				165F314A2483E79900BBEE02 /* SceneDelegate.swift in Sources */,
 			);

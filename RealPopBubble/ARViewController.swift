@@ -35,7 +35,11 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     var bubbles = [Bubble]()
     var bubbleExistsTime: TimeInterval = 0
     
+    var planes = [SCNNode]()
+    
     var didSetOrigin: Bool = false
+    
+    let coachingOverlay = ARCoachingOverlayView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,8 +61,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
-        //1. Check/set global timer (if timer == 0, stop game)
-        //2. Check bubble death timers - remove all bubbles that have expired
+        
         if lastUpdateTime == 0 {
             lastUpdateTime = time
         }
@@ -178,8 +181,17 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
                 
                 // Once we set up the origin, we start bubble spawn
                 didSetOrigin = true
+                
+                for plane in planes {
+                    plane.removeFromParentNode()
+                }
+                planes.removeAll()
             }
         }
+    }
+    
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
@@ -189,7 +201,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     
     func sessionWasInterrupted(_ session: ARSession) {
         // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
+        presentCoachingOverlay()
     }
     
     func sessionInterruptionEnded(_ session: ARSession) {

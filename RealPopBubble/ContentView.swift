@@ -44,7 +44,7 @@ struct ARKitBittomView: View {
                     Text("PAUSE")
                         .padding(10)
                 }.disabled(false)
-                    .background(false ? Color.gray : Color.blue)
+                    .background(data.gameIsPaused ? Color.gray : Color.blue)
                     .cornerRadius(4.0)
             }.padding(20)
                 .foregroundColor(.white)
