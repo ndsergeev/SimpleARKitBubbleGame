@@ -19,6 +19,10 @@ enum BubbleColor {
 
 class Bubble: SCNNode {
     var gamePoints: Int!
+    var startTime: TimeInterval = 0.0
+    var color: BubbleColor!
+    
+    let TRANSPARENCY: CGFloat = 0.7
     
     // Init without color, without position
     init(radius: CGFloat) {
@@ -26,10 +30,13 @@ class Bubble: SCNNode {
         
         let sphere = SCNSphere(radius: radius)
         
-        sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: randBubbleColor())
+        self.color = randBubbleColor()
         
+        setMaterial(geometry: sphere, color: self.color)
+
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
+        self.move()
     }
     
     // Init without color, with position
@@ -38,10 +45,13 @@ class Bubble: SCNNode {
         
         let sphere = SCNSphere(radius: radius)
         
-        sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: randBubbleColor())
+        self.color = randBubbleColor()
         
+        setMaterial(geometry: sphere, color: self.color)
+
         self.geometry = sphere
         self.position = position
+        self.move()
     }
     
     // Init with color, without position
@@ -50,10 +60,13 @@ class Bubble: SCNNode {
         
         let sphere = SCNSphere(radius: radius)
         
-        sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: color)
+        self.color = color
         
+        setMaterial(geometry: sphere, color: color)
+
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
+        self.move()
     }
     
     // Init with color, with position
@@ -62,10 +75,13 @@ class Bubble: SCNNode {
         
         let sphere = SCNSphere(radius: radius)
         
-        sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: color)
+        self.color = color
+        
+        setMaterial(geometry: sphere, color: color)
         
         self.geometry = sphere
         self.position = position
+        self.move()
     }
     
     func setBubbleColorAndPoints(color: BubbleColor) -> UIColor{
@@ -86,6 +102,17 @@ class Bubble: SCNNode {
             self.gamePoints = 10
             return UIColor.black
         }
+    }
+    
+    func setMaterial(geometry: SCNGeometry, color: BubbleColor) {
+        geometry.firstMaterial?.diffuse.contents = self.setBubbleColorAndPoints(color: color)
+        geometry.firstMaterial?.shininess = 75
+        geometry.firstMaterial?.transparencyMode = .dualLayer
+        geometry.firstMaterial?.isDoubleSided = true
+        geometry.firstMaterial?.lightingModel = .blinn
+        geometry.firstMaterial?.fresnelExponent = 1.5
+        geometry.firstMaterial?.specular.contents = UIColor(white: 0.6, alpha: 1.0)
+        geometry.firstMaterial?.transparency = TRANSPARENCY
     }
     
     func setPosition(position: SCNVector3) {
@@ -109,9 +136,24 @@ class Bubble: SCNNode {
         case 19:
             return .black
         default: //
+            #if DEBUG
             print("The chance color: \(chance) is out or the range")
+            #endif
             return .red
         }
+    }
+    
+    func move(){
+         let moveUp = SCNAction.moveBy(x: 0, y: 1, z: 0, duration: 24)
+         moveUp.timingMode = .easeInEaseOut;
+        
+         let moveDown = SCNAction.moveBy(x: 0, y: -1, z: 0, duration: 1)
+         moveDown.timingMode = .easeInEaseOut;
+         
+         let moveSequence = SCNAction.sequence([moveUp, moveDown])
+         let moveLoop = SCNAction.repeatForever(moveSequence)
+         
+         self.runAction(moveLoop)
     }
     
     required init?(coder: NSCoder) {
