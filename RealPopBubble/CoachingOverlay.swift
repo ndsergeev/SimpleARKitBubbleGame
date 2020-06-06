@@ -14,7 +14,13 @@ extension ARViewController: ARCoachingOverlayViewDelegate, ARSessionDelegate {
         presentCoachingOverlay()
     }
     
+    func sessionWasInterrupted(_ session: ARSession) {
+        // Inform the user that the session has been interrupted, for example, by presenting an overlay
+        presentCoachingOverlay()
+    }
+    
     func stopCoachingOverlay() {
+        // deletes animated signifier from the view
         DispatchQueue.main.async {
             self.coachingOverlay.delegate = nil
             self.coachingOverlay.setActive(false, animated: false)
@@ -23,6 +29,8 @@ extension ARViewController: ARCoachingOverlayViewDelegate, ARSessionDelegate {
     }
     
     func presentCoachingOverlay() {
+        // overlays animated signifier over the view
+        
         coachingOverlay.session = sceneView.session
         coachingOverlay.activatesAutomatically = false
         coachingOverlay.delegate = self

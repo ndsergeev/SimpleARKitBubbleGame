@@ -10,6 +10,7 @@ import SwiftUI
 import ARKit
 
 struct ARView: UIViewControllerRepresentable {
+    // coordinator
     @EnvironmentObject var data: DataModel
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<ARView>) -> ARViewController {

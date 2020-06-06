@@ -9,6 +9,7 @@
 import SwiftUI
 
 final class DataModel: ObservableObject {
+    // Observable Singleton
     static var shared = DataModel()
     
     @Published var highestScore: Int

@@ -18,6 +18,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     init(data: DataModel) {
         super.init(nibName: nil, bundle: nil)
         self.data = data
+        
         // you can reinit all fields here
         self.data!.timer = 60
     }
@@ -56,7 +57,8 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         rootNode = sceneView.scene.rootNode
         
         // Setting up the origin
-        originNode = SCNNode()
+        originNode = Origin()
+        originNode.isHidden = true
         rootNode.addChildNode(originNode)
     }
     
@@ -64,6 +66,10 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         
         if lastUpdateTime == 0 {
             lastUpdateTime = time
+            
+            // becuase when timer starts we need to init bubbles
+            // for the first time
+            spawnBubble(time: time)
         }
         
         let delta = time - lastUpdateTime
@@ -172,40 +178,29 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
                 hit.node.removeFromParentNode()
                 // REMOVE FROM THE BUBBLE ARRAY
             } else {
-                let translation = hit.worldCoordinates
-                let x = translation.x
-                let y = translation.y
-                let z = translation.z
-                
-                originNode.position = SCNVector3(x, y, z)
-                
-                // Once we set up the origin, we start bubble spawn
-                didSetOrigin = true
-                
-                for plane in planes {
-                    plane.removeFromParentNode()
+                if !coachingOverlay.isActive {
+                    let translation = hit.worldCoordinates
+                    let x = translation.x
+                    let y = translation.y
+                    let z = translation.z
+                    
+                    originNode.position = SCNVector3(x, y, z)
+                    originNode.isHidden = false
+                    
+                    // Once we set up the origin, we start bubble spawn
+                    didSetOrigin = true
+                    
+                    for plane in planes {
+                        plane.removeFromParentNode()
+                    }
+                    planes.removeAll()
                 }
-                planes.removeAll()
             }
         }
-    }
-    
-    func session(_ session: ARSession, didUpdate frame: ARFrame) {
-
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
         print(error)
-    }
-    
-    func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        presentCoachingOverlay()
-    }
-    
-    func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
-        
     }
 }
