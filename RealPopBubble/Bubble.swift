@@ -28,6 +28,7 @@ class Bubble: SCNNode {
     init(radius: CGFloat) {
         super.init()
         
+        let radius = randRadius();
         let sphere = SCNSphere(radius: radius)
         
         self.color = randBubbleColor()
@@ -36,13 +37,14 @@ class Bubble: SCNNode {
 
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
-        self.move()
+        self.move(radius: radius)
     }
     
     // Init without color, with position
     init(radius: CGFloat, position: SCNVector3) {
         super.init()
         
+        let radius = randRadius();
         let sphere = SCNSphere(radius: radius)
         
         self.color = randBubbleColor()
@@ -51,13 +53,14 @@ class Bubble: SCNNode {
 
         self.geometry = sphere
         self.position = position
-        self.move()
+        self.move(radius: radius)
     }
     
     // Init with color, without position
     init(radius: CGFloat, color: BubbleColor) {
         super.init()
         
+        let radius = randRadius();
         let sphere = SCNSphere(radius: radius)
         
         self.color = color
@@ -66,13 +69,14 @@ class Bubble: SCNNode {
 
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
-        self.move()
+        self.move(radius: radius)
     }
     
     // Init with color, with position
     init(radius: CGFloat, color: BubbleColor, position: SCNVector3) {
         super.init()
         
+        let radius = randRadius();
         let sphere = SCNSphere(radius: radius)
         
         self.color = color
@@ -83,7 +87,7 @@ class Bubble: SCNNode {
 
         self.geometry = sphere
         self.position = position
-        self.move()
+        self.move(radius: radius)
     }
     
     func setBubbleColorAndPoints(color: BubbleColor) -> UIColor{
@@ -145,17 +149,21 @@ class Bubble: SCNNode {
         }
     }
     
-    func move(){
-         let moveUp = SCNAction.moveBy(x: 0, y: 1, z: 0, duration: 24)
+    func move(radius: CGFloat){
+         let moveUp = SCNAction.moveBy(x: 0, y: 1, z: 0, duration: Double(radius) * 100 * 5)
+
          moveUp.timingMode = .easeInEaseOut;
+         let moveSequence = SCNAction.sequence([moveUp])
+         self.runAction(moveSequence)
         
-         let moveDown = SCNAction.moveBy(x: 0, y: -1, z: 0, duration: 1)
-         moveDown.timingMode = .easeInEaseOut;
-         
-         let moveSequence = SCNAction.sequence([moveUp, moveDown])
-         let moveLoop = SCNAction.repeatForever(moveSequence)
-         
-         self.runAction(moveLoop)
+//         SCNAction.customAction(duration: Double(radius) * 100 * 0.5) { (node, elapsedTime) in
+//          self.removeFromParentNode()
+//         }
+    }
+    
+    // make random sphere radius
+    func randRadius() -> CGFloat {
+        return CGFloat.random(in: 0.03...0.06)
     }
     
     required init?(coder: NSCoder) {
