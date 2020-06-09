@@ -19,6 +19,10 @@ enum BubbleColor {
 
 class Bubble: SCNNode {
     var gamePoints: Int!
+    var startTime: TimeInterval = 0.0
+    var color: BubbleColor!
+    
+    let TRANSPARENCY: CGFloat = 0.7
     
     // Init without color, without position
     init(radius: CGFloat) {
@@ -26,9 +30,9 @@ class Bubble: SCNNode {
         
         let sphere = SCNSphere(radius: radius)
         
-        sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: randBubbleColor())
+        self.color = randBubbleColor()
         
-        sphere.firstMaterial?.transparency = 0.5
+        setMaterial(geometry: sphere, color: self.color)
 
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
@@ -41,9 +45,9 @@ class Bubble: SCNNode {
         
         let sphere = SCNSphere(radius: radius)
         
-        sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: randBubbleColor())
+        self.color = randBubbleColor()
         
-        sphere.firstMaterial?.transparency = 0.5
+        setMaterial(geometry: sphere, color: self.color)
 
         self.geometry = sphere
         self.position = position
@@ -56,9 +60,9 @@ class Bubble: SCNNode {
         
         let sphere = SCNSphere(radius: radius)
         
-        sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: color)
+        self.color = color
         
-        sphere.firstMaterial?.transparency = 0.5
+        setMaterial(geometry: sphere, color: color)
 
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
@@ -71,7 +75,9 @@ class Bubble: SCNNode {
         
         let sphere = SCNSphere(radius: radius)
         
-        sphere.firstMaterial?.diffuse.contents = setBubbleColorAndPoints(color: color)
+        self.color = color
+        
+        setMaterial(geometry: sphere, color: color)
         
         sphere.firstMaterial?.transparency = 0.5
 
@@ -100,6 +106,17 @@ class Bubble: SCNNode {
         }
     }
     
+    func setMaterial(geometry: SCNGeometry, color: BubbleColor) {
+        geometry.firstMaterial?.diffuse.contents = self.setBubbleColorAndPoints(color: color)
+        geometry.firstMaterial?.shininess = 75
+        geometry.firstMaterial?.transparencyMode = .dualLayer
+        geometry.firstMaterial?.isDoubleSided = true
+        geometry.firstMaterial?.lightingModel = .blinn
+        geometry.firstMaterial?.fresnelExponent = 1.5
+        geometry.firstMaterial?.specular.contents = UIColor(white: 0.6, alpha: 1.0)
+        geometry.firstMaterial?.transparency = TRANSPARENCY
+    }
+    
     func setPosition(position: SCNVector3) {
         self.position = position
     }
@@ -121,7 +138,9 @@ class Bubble: SCNNode {
         case 19:
             return .black
         default: //
+            #if DEBUG
             print("The chance color: \(chance) is out or the range")
+            #endif
             return .red
         }
     }
