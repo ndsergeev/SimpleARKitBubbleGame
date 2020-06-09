@@ -22,7 +22,7 @@ extension ARViewController: ARCoachingOverlayViewDelegate, ARSessionDelegate {
     func stopCoachingOverlay() {
         // deletes animated signifier from the view
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            
+            self.data!.surfaceIsScanned = true
             self.coachingOverlay.delegate = nil
             self.coachingOverlay.setActive(false, animated: false)
             self.coachingOverlay.removeFromSuperview()
