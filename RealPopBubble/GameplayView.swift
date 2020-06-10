@@ -51,12 +51,12 @@ struct GameplayView: View {
                 VStack {
                     Spacer()
                     if data.surfaceIsScanned && !data.didSetOrigin {
-                        Text("Tap on the blue surface to set origin")
+                        Text("Tap on the green surface to set origin")
                             .font(.system(size: 20))
                             .padding(.top, 10)
                             .padding(.bottom, 80)
                             .frame(maxWidth: .infinity)
-                            .background(Color.black)
+                            .background(Color.blue)
                     }
                 }.animation(Animation.easeIn(duration: 0.8))
                     .edgesIgnoringSafeArea(.bottom)

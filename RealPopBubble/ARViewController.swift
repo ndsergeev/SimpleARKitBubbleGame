@@ -19,7 +19,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         super.init(nibName: nil, bundle: nil)
         self.data = data
         
-        self.data!.timer = 15
+        self.data!.timer = 30
         
         self.data!.currentScore = 0
 
@@ -56,7 +56,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         sceneView.scene = scene
 
         // Show statistics such as fps and timing information
-        sceneView.showsStatistics = true
+//        sceneView.showsStatistics = true
         sceneView.antialiasingMode = .multisampling4X
 
         rootNode = sceneView.scene.rootNode
@@ -71,10 +71,6 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         
         if lastUpdateTime == 0 {
             lastUpdateTime = time
-            
-            // becuase when timer starts we need to init bubbles
-            // for the first time
-            spawnBubble(time: time)
         }
         
         let delta = time - lastUpdateTime
@@ -86,7 +82,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
             self.bubbleExistsTime += delta
             
             if self.bubbleExistsTime > 2 {
-                spawnBubble(time: time)
+                spawnBubble()
                 
                 self.bubbleExistsTime = 0
             }
@@ -141,11 +137,11 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
-    func spawnBubble(time: Double) {
-        for _ in 0...2 {
+    func spawnBubble() {
+        let randNumber = Int.random(in: 1...5)
+        for _ in 0...randNumber {
             // change the constructor when Michelle implements radius range
-            let bubble = Bubble(radius: 0.025, position: randSpawnPos(origin: originNode.position))
-            bubble.startTime = time
+            let bubble = Bubble(position: randSpawnPos(origin: originNode.position))
             
             originNode.addChildNode(bubble)
         }
@@ -175,7 +171,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         sceneView.automaticallyUpdatesLighting = true
         
         #if DEBUG
-        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
+//        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         #endif
     }
     
@@ -226,6 +222,10 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
                     // reset scanning
                     sceneView.session.delegate = nil
                     sceneView.session.run(ARWorldTrackingConfiguration())
+                    
+                    // becuase when timer starts we need to init bubbles
+                    // for the first time
+                    spawnBubble()
                 }
             }
         }

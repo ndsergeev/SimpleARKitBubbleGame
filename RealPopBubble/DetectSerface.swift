@@ -22,7 +22,7 @@ extension ARViewController {
             let height = CGFloat(planeAnchor.extent.z)
             let plane = SCNPlane(width: width, height: height)
             
-            plane.materials.first?.diffuse.contents = CGColor(srgbRed: 0, green: 0, blue: 1, alpha: 0.6)
+            plane.materials.first?.diffuse.contents = CGColor(srgbRed: 0, green: 1, blue: 0, alpha: 0.6)
             
             let planeNode = SCNNode(geometry: plane)
             
