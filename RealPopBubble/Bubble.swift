@@ -19,15 +19,15 @@ enum BubbleColor {
 
 class Bubble: SCNNode {
     var gamePoints: Int!
-    var startTime: TimeInterval = 0.0
     var color: BubbleColor!
     
     let TRANSPARENCY: CGFloat = 0.7
     
     // Init without color, without position
-    init(radius: CGFloat) {
+    override init() {
         super.init()
         
+        let radius = randRadius();
         let sphere = SCNSphere(radius: radius)
         
         self.color = randBubbleColor()
@@ -36,13 +36,14 @@ class Bubble: SCNNode {
 
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
-        self.move()
+        self.move(radius: radius)
     }
     
     // Init without color, with position
-    init(radius: CGFloat, position: SCNVector3) {
+    init(position: SCNVector3) {
         super.init()
         
+        let radius = randRadius();
         let sphere = SCNSphere(radius: radius)
         
         self.color = randBubbleColor()
@@ -51,13 +52,14 @@ class Bubble: SCNNode {
 
         self.geometry = sphere
         self.position = position
-        self.move()
+        self.move(radius: radius)
     }
     
     // Init with color, without position
-    init(radius: CGFloat, color: BubbleColor) {
+    init(color: BubbleColor) {
         super.init()
         
+        let radius = randRadius();
         let sphere = SCNSphere(radius: radius)
         
         self.color = color
@@ -66,22 +68,25 @@ class Bubble: SCNNode {
 
         self.geometry = sphere
         self.position = SCNVector3(0,0,0)
-        self.move()
+        self.move(radius: radius)
     }
     
     // Init with color, with position
-    init(radius: CGFloat, color: BubbleColor, position: SCNVector3) {
+    init(color: BubbleColor, position: SCNVector3) {
         super.init()
         
+        let radius = randRadius();
         let sphere = SCNSphere(radius: radius)
         
         self.color = color
         
         setMaterial(geometry: sphere, color: color)
         
+        sphere.firstMaterial?.transparency = 0.5
+
         self.geometry = sphere
         self.position = position
-        self.move()
+        self.move(radius: radius)
     }
     
     func setBubbleColorAndPoints(color: BubbleColor) -> UIColor{
@@ -106,10 +111,10 @@ class Bubble: SCNNode {
     
     func setMaterial(geometry: SCNGeometry, color: BubbleColor) {
         geometry.firstMaterial?.diffuse.contents = self.setBubbleColorAndPoints(color: color)
-        geometry.firstMaterial?.shininess = 75
+        geometry.firstMaterial?.shininess = 100
         geometry.firstMaterial?.transparencyMode = .dualLayer
         geometry.firstMaterial?.isDoubleSided = true
-        geometry.firstMaterial?.lightingModel = .blinn
+        geometry.firstMaterial?.lightingModel = .lambert
         geometry.firstMaterial?.fresnelExponent = 1.5
         geometry.firstMaterial?.specular.contents = UIColor(white: 0.6, alpha: 1.0)
         geometry.firstMaterial?.transparency = TRANSPARENCY
@@ -143,17 +148,36 @@ class Bubble: SCNNode {
         }
     }
     
-    func move(){
-         let moveUp = SCNAction.moveBy(x: 0, y: 1, z: 0, duration: 24)
-         moveUp.timingMode = .easeInEaseOut;
+    func move(radius: CGFloat){
+        let moveUp = SCNAction.moveBy(x: 0, y: 2, z: 0, duration: Double(radius) * 300)
+
+         moveUp.timingMode = .easeInEaseOut
+         let moveSequence = SCNAction.sequence([moveUp])
         
-         let moveDown = SCNAction.moveBy(x: 0, y: -1, z: 0, duration: 1)
-         moveDown.timingMode = .easeInEaseOut;
-         
-         let moveSequence = SCNAction.sequence([moveUp, moveDown])
-         let moveLoop = SCNAction.repeatForever(moveSequence)
-         
-         self.runAction(moveLoop)
+        // run moveSequence on specific duration and remove it from parent node after completion
+         self.runAction(moveSequence, completionHandler:{() -> Void in self.removeFromParentNode()})
+    }
+    
+    // Alternative to simulate rand speed
+//    func move(radius: CGFloat){
+//        let coeff = 150 * abs((Bubble.UpperLimit - radius) / Bubble.UpperLimit - Bubble.LowerLimit)
+//        // change lower boundary for the fastest
+//        let timer: TimeInterval = TimeInterval(coeff < 5 ? 5 : coeff)
+//
+//        let moveUp = SCNAction.moveBy(x: 0, y: 2, z: 0, duration: timer)
+//
+//        moveUp.timingMode = .linear
+//        let moveSequence = SCNAction.sequence([moveUp])
+//
+//        // run moveSequence on specific duration and remove it from parent node after completion
+//        self.runAction(moveSequence, completionHandler:{() -> Void in self.removeFromParentNode()})
+//    }
+    
+    static let LowerLimit: CGFloat = 0.04
+    static let UpperLimit: CGFloat = 0.06
+    // make random sphere radius
+    func randRadius() -> CGFloat {
+        return CGFloat.random(in: Bubble.LowerLimit...Bubble.UpperLimit)
     }
     
     required init?(coder: NSCoder) {

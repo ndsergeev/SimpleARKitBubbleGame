@@ -12,46 +12,49 @@ struct ContentView: View {
     @EnvironmentObject var data: DataModel
     
     var body: some View {
-        ARView()
-        .environmentObject(data)
-        .edgesIgnoringSafeArea(.all)
-        .overlay(ARKitBittomView())
+        InitialView()
+            .background(Color.black)
+            .foregroundColor(.white)
     }
 }
 
-struct ARKitBittomView: View {
+struct InitialView: View {
     @EnvironmentObject var data: DataModel
+    @State var selection : Int? = nil
     
     var body: some View {
-        VStack {
-            HStack {
+        NavigationView {
+            VStack {
+                Spacer()
+                
                 VStack {
-                    Text("Highest: \(data.highestScore)")
-                    Text("Current: \(data.currentScore)")
+                    Text("NOW").font(.system(size: 84))
+                    Text("REAL").font(.system(size: 84))
+                    HStack {
+                        Text("PoPit ").font(.system(size: 48))
+                        Text("🎈").animation(Animation.interactiveSpring(response: 3, dampingFraction: 0.1, blendDuration: 1))
+                        .font(.system(size: 60))
+                    }
                 }
-
-                Spacer()
-                
-                Text("⏱: \(abs(data.timer),  specifier: "%.f")s")
-                    .font(.largeTitle)
-                .font(.largeTitle)
                 
                 Spacer()
-
-                Button(action: {
-                    
-                }) {
-                    Text("PAUSE")
-                        .padding(10)
-                }.disabled(false)
-                    .background(data.gameIsPaused ? Color.gray : Color.blue)
-                    .cornerRadius(4.0)
-            }.padding(20)
+                
+                NavigationLink(destination: GameplayView(), tag: 0, selection: self.$selection) {
+                    Text("")
+                }.hiddenNavigationBarStyle()
+                
+                Button(action: { self.selection = 0 }) {
+                    Text("START")
+                    .padding()
+                }.font(.system(size: 24))
+                .padding(Edge.Set.horizontal, 30)
+                .background(Color.blue)
                 .foregroundColor(.white)
-                .background(Color(.clear))
-
-            Spacer()
-        }
+                .cornerRadius(4.0)
+                
+                Spacer()
+            }
+        }.hiddenNavigationBarStyle()
     }
 }
 

@@ -19,8 +19,14 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         super.init(nibName: nil, bundle: nil)
         self.data = data
         
-        // you can reinit all fields here
-        self.data!.timer = 15
+        self.data!.timer = 30
+        
+        self.data!.currentScore = 0
+
+        self.data!.gameIsPaused = false
+        self.data!.gameIsOver = false
+        self.data!.didSetOrigin = false
+        self.data!.surfaceIsScanned = false
     }
     
     required init?(coder: NSCoder) {
@@ -34,7 +40,6 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     
     // origin based variables
     var planes = [SCNNode]()
-    var didSetOrigin: Bool = false
     let coachingOverlay = ARCoachingOverlayView()
     
     var lastUpdateTime: TimeInterval = 0
@@ -51,7 +56,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         sceneView.scene = scene
 
         // Show statistics such as fps and timing information
-        sceneView.showsStatistics = true
+//        sceneView.showsStatistics = true
         sceneView.antialiasingMode = .multisampling4X
 
         rootNode = sceneView.scene.rootNode
@@ -66,22 +71,18 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         
         if lastUpdateTime == 0 {
             lastUpdateTime = time
-            
-            // becuase when timer starts we need to init bubbles
-            // for the first time
-            spawnBubble(time: time)
         }
         
         let delta = time - lastUpdateTime
         
-        if didSetOrigin {
+        if data!.didSetOrigin {
             updateTimer(delta: delta)
             
             // create bubble
             self.bubbleExistsTime += delta
             
             if self.bubbleExistsTime > 2 {
-                spawnBubble(time: time)
+                spawnBubble()
                 
                 self.bubbleExistsTime = 0
             }
@@ -100,6 +101,12 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         }
         
         self.lastUpdateTime = time
+    }
+    
+    func updateDidSetOrigin(val: Bool) {
+        DispatchQueue.main.async {
+            self.data!.didSetOrigin = val
+        }
     }
     
     func updateGameIsOver(val: Bool) {
@@ -130,11 +137,11 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
-    func spawnBubble(time: Double) {
-        for _ in 0...2 {
+    func spawnBubble() {
+        let randNumber = Int.random(in: 1...5)
+        for _ in 0...randNumber {
             // change the constructor when Michelle implements radius range
-            let bubble = Bubble(radius: 0.025, position: randSpawnPos(origin: originNode.position))
-            bubble.startTime = time
+            let bubble = Bubble(position: randSpawnPos(origin: originNode.position))
             
             originNode.addChildNode(bubble)
         }
@@ -164,7 +171,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         sceneView.automaticallyUpdatesLighting = true
         
         #if DEBUG
-        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
+//        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         #endif
     }
     
@@ -180,12 +187,17 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         
         var hitTestOptions = [SCNHitTestOption: Any]()
         hitTestOptions[SCNHitTestOption.boundingBoxOnly] = true
+        hitTestOptions[SCNHitTestOption.ignoreHiddenNodes] = true
+        hitTestOptions[SCNHitTestOption.backFaceCulling] = true
+        hitTestOptions[SCNHitTestOption.firstFoundOnly] = true
+        hitTestOptions[SCNHitTestOption.ignoreLightArea] = true
+
         let hitResults: [SCNHitTestResult] = sceneView.hitTest(location, options: hitTestOptions)
         
         // function removes bubble from the parent
         if let hit = hitResults.first {
 
-            if didSetOrigin {
+            if data!.didSetOrigin {
                 if hit.node.isKind(of: Bubble.self) {
                     touchBubble(hit: hit)
                 }
@@ -200,12 +212,20 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
                     originNode.isHidden = false
                     
                     // Once we set up the origin, we start bubble spawn
-                    didSetOrigin = true
+                    updateDidSetOrigin(val: true)
                     
                     for plane in planes {
                         plane.removeFromParentNode()
                     }
                     planes.removeAll()
+                    
+                    // reset scanning
+                    sceneView.session.delegate = nil
+                    sceneView.session.run(ARWorldTrackingConfiguration())
+                    
+                    // becuase when timer starts we need to init bubbles
+                    // for the first time
+                    spawnBubble()
                 }
             }
         }
@@ -224,9 +244,11 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
             }
             self.previousBubbleColor = bubble.color
 
-            if self.data!.currentScore > self.data!.highestScore {
-                self.data!.highestScore = self.data!.currentScore
-            }
+            // Uncomment if you add player profiles and their records
+            // if self.data!.currentScore > self.data!.highestScore {
+            //     self.data!.highestScore = self.data!.currentScore
+            // }
+            
             // Removals
             hit.node.removeFromParentNode()
         }
