@@ -150,20 +150,18 @@ class Bubble: SCNNode {
     }
     
     func move(radius: CGFloat){
-         let moveUp = SCNAction.moveBy(x: 0, y: 1, z: 0, duration: Double(radius) * 100 * 5)
+        let moveUp = SCNAction.moveBy(x: 0, y: 1, z: 0, duration: Double(radius) * 100 * 2)
 
-         moveUp.timingMode = .easeInEaseOut;
+         moveUp.timingMode = .easeInEaseOut
          let moveSequence = SCNAction.sequence([moveUp])
-         self.runAction(moveSequence)
         
-//         SCNAction.customAction(duration: Double(radius) * 100 * 0.5) { (node, elapsedTime) in
-//          self.removeFromParentNode()
-//         }
+        // run moveSequence on specific duration and remove it from parent node after completion
+         self.runAction(moveSequence, completionHandler:{() -> Void in self.removeFromParentNode()})
     }
     
     // make random sphere radius
     func randRadius() -> CGFloat {
-        return CGFloat.random(in: 0.03...0.06)
+        return CGFloat.random(in: 0.04...0.06)
     }
     
     required init?(coder: NSCoder) {
