@@ -12,20 +12,25 @@ final class DataModel: ObservableObject {
     // Observable Singleton
     static var shared = DataModel()
     
-    @Published var highestScore: Int
+//    @Published var highestScore: Int
     @Published var currentScore: Int
 
     @Published var timer: TimeInterval
     @Published var gameIsPaused: Bool
     @Published var gameIsOver: Bool
+    @Published var didSetOrigin: Bool
+    @Published var surfaceIsScanned: Bool
 
     init() {
-        highestScore = 0
+//        highestScore = 0
         currentScore = 0
 
         timer = 60
 
         gameIsPaused = false
         gameIsOver = false
+        
+        didSetOrigin = false
+        surfaceIsScanned = false
     }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		164E385E248F804A00A9FC80 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E385D248F804A00A9FC80 /* NavigationBar.swift */; };
+		164E3860248F80CD00A9FC80 /* GameplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164E385F248F80CD00A9FC80 /* GameplayView.swift */; };
 		165F31482483773900BBEE02 /* Bubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165F31472483773900BBEE02 /* Bubble.swift */; };
 		165F314A2483E79900BBEE02 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165F31492483E79900BBEE02 /* SceneDelegate.swift */; };
 		165F314C2483E99D00BBEE02 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165F314B2483E99D00BBEE02 /* ContentView.swift */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		164E385D248F804A00A9FC80 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
+		164E385F248F80CD00A9FC80 /* GameplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameplayView.swift; sourceTree = "<group>"; };
 		165F31472483773900BBEE02 /* Bubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bubble.swift; sourceTree = "<group>"; };
 		165F31492483E79900BBEE02 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		165F314B2483E99D00BBEE02 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -72,6 +76,8 @@
 				1678912D247A557800269148 /* AppDelegate.swift */,
 				165F31492483E79900BBEE02 /* SceneDelegate.swift */,
 				165F314B2483E99D00BBEE02 /* ContentView.swift */,
+				164E385F248F80CD00A9FC80 /* GameplayView.swift */,
+				164E385D248F804A00A9FC80 /* NavigationBar.swift */,
 				16BA8F4D24866ADD00B5D002 /* ARView.swift */,
 				16789131247A557800269148 /* ARViewController.swift */,
 				167A0B3F248BE87500E905B5 /* CoachingOverlay.swift */,
@@ -155,11 +161,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				164E3860248F80CD00A9FC80 /* GameplayView.swift in Sources */,
 				16789132247A557800269148 /* ARViewController.swift in Sources */,
 				167A0B40248BE87500E905B5 /* CoachingOverlay.swift in Sources */,
 				165F314C2483E99D00BBEE02 /* ContentView.swift in Sources */,
 				16BA8F4C2486641500B5D002 /* DataModel.swift in Sources */,
 				165F31482483773900BBEE02 /* Bubble.swift in Sources */,
+				164E385E248F804A00A9FC80 /* NavigationBar.swift in Sources */,
 				1678912E247A557800269148 /* AppDelegate.swift in Sources */,
 				16BAA2742489366C00DF7DDB /* DetectSerface.swift in Sources */,
 				16BA8F4E24866ADD00B5D002 /* ARView.swift in Sources */,
@@ -307,7 +315,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = nsergeev.RealPopBubble;
+				PRODUCT_BUNDLE_IDENTIFIER = nsergeev1.RealPopBubble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -325,7 +333,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = nsergeev.RealPopBubble;
+				PRODUCT_BUNDLE_IDENTIFIER = nsergeev1.RealPopBubble;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

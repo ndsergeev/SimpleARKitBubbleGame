@@ -12,7 +12,7 @@ extension ARViewController {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         // inits constructed horisontal planes and scales them
-        if !didSetOrigin {
+        if !data!.didSetOrigin {
             guard let planeAnchor = anchor as? ARPlaneAnchor
                 else {
                     return
@@ -43,7 +43,7 @@ extension ARViewController {
 
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         // renders horisontal node planes
-        if !didSetOrigin {
+        if !data!.didSetOrigin {
             guard let planeAnchor = anchor as?  ARPlaneAnchor,
                 let planeNode = node.childNodes.first,
                 let plane = planeNode.geometry as? SCNPlane
