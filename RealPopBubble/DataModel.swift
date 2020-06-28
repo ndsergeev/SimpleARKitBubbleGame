@@ -10,9 +10,8 @@ import SwiftUI
 
 final class DataModel: ObservableObject {
     // Observable Singleton
-    static var shared = DataModel()
+    static let shared = DataModel()
     
-//    @Published var highestScore: Int
     @Published var currentScore: Int
 
     @Published var timer: TimeInterval
@@ -21,8 +20,7 @@ final class DataModel: ObservableObject {
     @Published var didSetOrigin: Bool
     @Published var surfaceIsScanned: Bool
 
-    init() {
-//        highestScore = 0
+    private init() {
         currentScore = 0
 
         timer = 60

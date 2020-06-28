@@ -46,24 +46,15 @@ struct GameplayView: View {
 
                     Spacer()
                 }.hiddenNavigationBarStyle()
+                    .zIndex(0)
+            )
+            .overlay(
+                TapSurfaceMessage()
             )
             .overlay(
                 VStack {
                     Spacer()
-                    if data.surfaceIsScanned && !data.didSetOrigin {
-                        Text("Tap on the green surface to set origin")
-                            .font(.system(size: 20))
-                            .padding(.top, 10)
-                            .padding(.bottom, 80)
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                    }
-                }.animation(Animation.easeIn(duration: 0.8))
-                    .edgesIgnoringSafeArea(.bottom)
-            )
-            .overlay(
-                VStack {
-                    Spacer()
+                    
                     if data.gameIsOver {
                         VStack {
                             VStack {
@@ -87,10 +78,38 @@ struct GameplayView: View {
                             .foregroundColor(.white)
                             .background(Color.black)
                             .cornerRadius(4.0)
+                            .transition(AnyTransition.move(edge: .top).combined(with: .opacity))
+                            .animation(.spring())
+                            .zIndex(1)
                     }
+                    
                     Spacer()
                 }.hiddenNavigationBarStyle()
             )
         }.hiddenNavigationBarStyle()
+    }
+}
+
+struct TapSurfaceMessage: View {
+    @EnvironmentObject var data: DataModel
+    
+    var body: some View {
+        GeometryReader { geometry in
+            VStack {
+                Spacer()
+                
+                if self.data.surfaceIsScanned && !self.data.didSetOrigin {
+                    Text("Tap on the green surface to set origin")
+                    .font(.system(size: 20))
+                    .padding(.top, 10)
+                    .padding(.bottom, geometry.safeAreaInsets.bottom)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .transition(.move(edge: .bottom))
+                    .animation(.spring())
+                    .zIndex(1)
+                }
+            }.edgesIgnoringSafeArea(.bottom)
+        }
     }
 }

@@ -59,7 +59,6 @@ struct InitialView: View {
 }
 
 #if DEBUG
-
 struct ContentView_Preview: PreviewProvider {
     static var previews: some View {
         ContentView()
